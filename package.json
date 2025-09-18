@@ -1,30 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "abdur",
-  "version": "1.0.0",
-  "description": "RTO Data",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/codewithabdur/vehicle_insurrance.git"
-  },
-  "keywords": [
-    "npm"
-  ],
-  "author": "CodeWithAbdur",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/codewithabdur/vehicle_insurrance/issues"
-  },
-  "homepage": "https://github.com/codewithabdur/vehicle_insurrance#readme",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "nodemon": "^3.1.10"
-=======
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
@@ -58,6 +32,5 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "vite": "^7.0.4"
->>>>>>> c579f00 (upodated)
   }
 }
