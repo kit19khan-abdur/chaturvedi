@@ -117,6 +117,10 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
       fields.push("phonepeAmount", "phonepeDetail");
     }
 
+    if(localData?.paymentModes?.length === 0){
+      fields.push("paymentModes")
+    }
+
     // Always required fields
     fields.push("agencyAmount", "paymentDate");
 
@@ -190,6 +194,9 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               <span>{mode}</span>
             </label>
           ))}
+           {showErrors && localData?.paymentModes?.length === 0 && (
+              <p className="text-sm text-red-500 mt-1">Select One Payment Method</p>
+            )}
         </div>
       </div>
 
@@ -202,10 +209,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
             <input
               type="text"
               name="cashAmount"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.cashAmount === "" && !stepData?.cashAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.cashAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.cashAmount === "" && !stepData?.cashAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -218,10 +228,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               type="text"
               name="neftAmount"
               placeholder="NEFT Or RTGS Amount Paid to Insurance Company"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.neftAmount === "" && !stepData?.neftAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.neftAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.neftAmount === "" && !stepData?.neftAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
           <div>
             <label>UTR / Transaction ID / Cheque Details</label>
@@ -229,10 +242,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               type="text"
               name="transactionID"
               placeholder="Enter UTR / Transaction ID / Cheque Details"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.transactionID === "" && !stepData?.transactionID ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.transactionID || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.transactionID === "" && !stepData?.transactionID && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -245,10 +261,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               type="text"
               name="googlePayAmount"
               placeholder="Enter Google Pay Amount Paid to Insurance Company"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.googlePayAmount === "" && !stepData?.googlePayAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.googlePayAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.googlePayAmount === "" && !stepData?.googlePayAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
           <div>
             <label htmlFor=""></label>
@@ -272,6 +291,9 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               <option value="Ravi Shankar - PNB BANK - S/A">Ravi Shankar - PNB BANK - S/A</option>
               <option value="Priyanka Sharma - PNB BANK - S/A">Priyanka Sharma - PNB BANK - S/A</option>
             </select>
+            {showErrors && stepData?.googlePayDetail === "" && !stepData?.googlePayDetail && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -283,10 +305,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
             <input
               type="text"
               name="debitAmount"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.debitAmount === "" && !stepData?.debitAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.debitAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.debitAmount === "" && !stepData?.debitAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
           <div>
             <label>Select Debit Card</label>
@@ -310,7 +335,9 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               <option value="Ravi Shankar - PNB BANK - S/A">Ravi Shankar - PNB BANK - S/A</option>
               <option value="Priyanka Sharma - PNB BANK - S/A">Priyanka Sharma - PNB BANK - S/A</option>
             </select>
-
+            {showErrors && stepData?.debitCardDetail === "" && !stepData?.debitCardDetail && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -323,10 +350,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               type="text"
               name="creditAmount"
               placeholder="Enter Credit Card Amount Paid to Insurance Company"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.creditAmount === "" && !stepData?.creditAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.creditAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.creditAmount === "" && !stepData?.creditAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
           <div>
             <label>Select Credit Card</label>
@@ -336,17 +366,10 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               <option value="Chaturvedi Motors - SBI BANK - C/A">Chaturvedi Motors - SBI BANK - C/A</option>
               <option value="SatyaPrakash - ICICI BANK - S/A">SatyaPrakash - ICICI BANK - S/A</option>
             </select>
+            {showErrors && stepData?.creditCard === "" && !stepData?.creditCard && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
-          {/* <div>
-            <label>Credit Card Details</label>
-            <input
-              type="text"
-              name="creditCardDetail"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
-              value={stepData.creditCardDetail || ""}
-              onChange={handleChange}
-            />
-          </div> */}
         </>
       )}
 
@@ -358,10 +381,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               type="text"
               placeholder="Enter Netbanking Amount Paid to Insurance Company"
               name="netbankingAmount"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.netbankingAmount === "" && !stepData?.netbankingAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.netbankingAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.netbankingAmount === "" && !stepData?.netbankingAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
           <div>
             <label>Select Netbanking Detail</label>
@@ -385,6 +411,9 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               <option value="Ravi Shankar - PNB BANK - S/A">Ravi Shankar - PNB BANK - S/A</option>
               <option value="Priyanka Sharma - PNB BANK - S/A">Priyanka Sharma - PNB BANK - S/A</option>
             </select>
+            {showErrors && stepData?.netbankingDetail === "" && !stepData?.netbankingDetail && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -396,11 +425,14 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
             <input
               type="text"
               name="chequeAmount"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.chequeAmount === "" && !stepData?.chequeAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               placeholder="Enter Cheque Amount"
               value={stepData.chequeAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.chequeAmount === "" && !stepData?.chequeAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -413,10 +445,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               type="text"
               name="phonepeAmount"
               placeholder="Enter Phonepe Amount Paid to Insurance Company"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.phonepeAmount === "" && !stepData?.phonepeAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.phonepeAmount || ""}
               onChange={handleChangeStep}
             />
+            {showErrors && stepData?.phonepeAmount === "" && !stepData?.phonepeAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
           <div>
             <label>Select PhonePe Detail</label>
@@ -430,6 +465,9 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
               <option value="Chitra CHATURVEDI SBI -7417227114">Chitra CHATURVEDI SBI -7417227114</option>
               <option value="Chaturvedi Motors HDFC 9837111044">Chaturvedi Motors HDFC 9837111044</option>
             </select>
+            {showErrors && stepData?.phonepeDetail === "" && !stepData?.phonepeDetail && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -440,11 +478,14 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
           <input
             type="text"
             name="chequeDetails"
-            className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+            className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.chequeDetails === "" && !stepData?.chequeDetails ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
             placeholder="Enter UTR / Transaction ID / Cheque Details"
             value={stepData.chequeDetails || ""}
             onChange={handleChangeStep}
           />
+          {showErrors && stepData?.chequeDetails === "" && !stepData?.chequeDetails && (
+            <p className="text-sm text-red-500 mt-1">This field is required.</p>
+          )}
         </div>
       )}
 
@@ -454,10 +495,13 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
         <input
           type="text"
           name="agencyAmount"
-          className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+          className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.agencyAmount === "" && !stepData?.agencyAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
           value={stepData.agencyAmount || ""}
           onChange={handleChangeStep}
         />
+        {showErrors && stepData?.agencyAmount === "" && !stepData?.agencyAmount && (
+          <p className="text-sm text-red-500 mt-1">This field is required.</p>
+        )}
       </div>
 
       <div>
@@ -465,22 +509,14 @@ const StepFive = ({ formData = {}, setFormData = () => { }, setRequiredFields, s
         <input
           type="date"
           name="paymentDate"
-          className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+          className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.paymentDate === "" && !stepData?.paymentDate ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
           value={stepData.paymentDate || ""}
           onChange={handleChangeStep}
         />
+        {showErrors && stepData?.paymentDate === "" && !stepData?.paymentDate && (
+          <p className="text-sm text-red-500 mt-1">This field is required.</p>
+        )}
       </div>
-
-      {/* <div>
-        <label>Transaction ID / Cheque No / UTR</label>
-        <input
-          type="text"
-          name="transactionId"
-          className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
-          value={stepData.transactionId || ""}
-          onChange={handleChangeStep}
-        />
-      </div> */}
     </div>
   );
 };

@@ -20,12 +20,11 @@ const toISTDateString = (dateInput) => {
   return istDate.toISOString().split("T")[0]; // yyyy-mm-dd
 };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+const handleSubmit = async () => {
   const finalData = JSON.parse(localStorage.getItem("stepData")) || {};
 
   // Construct the payload as per API expectations
-  const payload ={
+  const payload = {
     Username: "SATYA1060025",
     Password: "4596",
     PersonName: finalData.customername,
@@ -118,16 +117,33 @@ const handleSubmit = async (e) => {
     chequeNumber: finalData.chequeNumber || "",
     transactionId: finalData.transactionId || "",
     expectedClearDate: toISTDateString(finalData.expectedClearDate) || "",
-    comments: finalData.comments || "",
-    callExecutiveRefs: Array.isArray(finalData.callExecutiveRefs)
-      ? finalData.callExecutiveRefs.map(item => item.label).join(", ")
-      : "",
-    fieldExecutiveRefs: Array.isArray(finalData.fieldExecutiveRefs)
-      ? finalData.fieldExecutiveRefs.map(item => item.label).join(", ")
-      : "",
-    policyUnderwriter: finalData.policyUnderwriter || "",
-    pucAvailable: finalData.pucAvailable || "",
-    remarks: finalData.remarks || "",
+    callExecutiveRefs: (finalData.callExecutiveRefs || []).join(", "),
+    fieldExecutiveRefs: (finalData.fieldExecutiveRefs || []).join(", "),
+    policyUnderwriter: finalData.policyUnderwriter || '',
+    pucAvailable: finalData.pucAvailable || '',
+    pucCertificateNumber: finalData.pucCertificateNumber || '',
+    pucStartDate: finalData.pucStartDate || '',
+    pucEndDate: finalData.pucEndDate || '',
+    remarks: finalData.remarks || '',
+    cashAmountsix: finalData.cashAmountsix,
+    neftAmountsix: finalData.neftAmountsix,
+    googlePayAmountsix: finalData.googlePayAmountsix,
+    googlePayDetailsix: finalData.googlePayDetailsix,
+    debitAmountsix: finalData.debitAmountsix,
+    debitCardDetailsix: finalData.debitCardDetailsix,
+    creditAmountsix: finalData.creditAmountsix,
+    creditCardsix: finalData.creditCardsix,
+    creditCardDetailsix: finalData.creditCardDetailsix,
+    netbankingAmountsix: finalData.netbankingAmountsix,
+    netbankingDetailsix: finalData.netbankingDetailsix,
+    chequeAmountsix: finalData.chequeAmountsix,
+    chequeDetailssix: finalData.chequeDetailssix,
+    phonepeAmountsix: finalData.phonepeAmountsix,
+    phonepeDetailsix: finalData.phonepeDetailsix,
+    agencyAmountsix: finalData.agencyAmountsix,
+    paymentDatesix: finalData.paymentDatesix,
+    transactionIdsix: finalData.transactionIdsix,
+    transactionIDsix: finalData.transactionIDsix,
     SourceName: "Chaturvedi Motors Form",
     MediumName: "Website",
     CountryCode: "+91",
@@ -139,7 +155,7 @@ const handleSubmit = async (e) => {
     FollowupRemarks: "Chaturvedi Motors Form",
     Remarks: "Chaturvedi Motors Form",
     LeadNo: "0",
-    Update: "1"
+    Update: "0"
   };
 
   try {
@@ -179,8 +195,11 @@ const handleSubmit = async (e) => {
   } catch (error) {
     console.error("Error submitting form:", error);
     alert("Error connecting to server.");
-  }finally{
-    // localStorage.removeItem("stepData")
+  } finally {
+    localStorage.removeItem("stepData")
+    localStorage.removeItem("rtoData")
+    localStorage.removeItem("localData")
+    localStorage.removeItem("chaturvediFormData")
   }
 };
 

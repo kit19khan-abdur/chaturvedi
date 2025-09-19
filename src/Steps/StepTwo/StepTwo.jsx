@@ -22,6 +22,7 @@ const StepTwo = ({   setRequiredFields, requiredFields, showErrors }) => {
   })
 
 
+
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("stepData"));
     if (storedData) {
@@ -49,6 +50,33 @@ const StepTwo = ({   setRequiredFields, requiredFields, showErrors }) => {
     varience: "",
     fueltype: ""
   })
+
+ useEffect(() => {
+  const storedStep = JSON.parse(localStorage.getItem("stepData"));
+  if (storedStep) setStepData(storedStep);
+
+  const rto = JSON.parse(localStorage.getItem("rtoData"));
+  if (rto) {
+    // prefill stepData
+    setStepData(prev => ({
+      ...prev,
+      rtoState: rto.rtoState || "",
+      rtoCity: rto.rtoCity || "",
+      product: rto.product || "",
+      manufacturerType: rto.manufacturerType || "",
+      model: rto.model || "",
+      varience: rto.varience || "",
+      fueltype: rto.fueltype || "",
+    }));
+
+    // prefill keys so the dependent dropdowns populate
+    setDataKey(rto.rtoState || "");
+    setProductKey(rto.product || "");
+    setManufacturerKey(rto.manufacturerType || "");
+    setModelKey(rto.model || "");
+    setVarientKey(rto.varience || "");
+  }
+}, []);
 
   const handleChangeStep = (e) => {
   const { name, value } = e.target;

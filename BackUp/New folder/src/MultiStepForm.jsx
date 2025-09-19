@@ -129,17 +129,38 @@ const getInitialFormData = () => {
       dueAmount: "",
       expectedClearDate: "",
       comments: "",
+      checkboxsix: "",
+      cashAmountsix: "",
+      neftAmountsix: "",
+      googlePayAmountsix: "",
+      googlePayDetailsix: "",
+      debitAmountsix: "",
+      debitCardDetailsix: "",
+      creditAmountsix: "",
+      creditCardsix: "",
+      creditCardDetailsix: "",
+      netbankingAmountsix: "",
+      netbankingDetailsix: "",
+      chequeAmountsix: "",
+      chequeDetailssix: "",
+      phonepeAmountsix: "",
+      phonepeDetailsix: "",
+      agencyAmountsix: "",
+      paymentDatesix: "",
+      transactionIdsix: "",
+      transactionIDsix: "",
+      paymentModessix: [],
+      dueAmountLeftByCustomer: "",
 
       // Step 7
 
-      paymentStatus: "",
-      checkbox: "",
-      chequeNumber: "",
-      transactionId: "",
-      paymentDate: "",
-      dueAmount: "",
-      expectedClearDate: "",
-      comments: "",
+      fieldExecutiveRefs: [],
+      policyUnderwriter: '',
+      pucAvailable: '',
+      pucCertificateNumber: '',
+      pucStartDate: '',
+      pucEndDate: '',
+      remarks: '',
     };
 };
 
@@ -257,17 +278,38 @@ const MultiStepForm = () => {
     dueAmount: "",
     expectedClearDate: "",
     comments: "",
+    checkboxsix: "",
+    cashAmountsix: "",
+    neftAmountsix: "",
+    googlePayAmountsix: "",
+    googlePayDetailsix: "",
+    debitAmountsix: "",
+    debitCardDetailsix: "",
+    creditAmountsix: "",
+    creditCardsix: "",
+    creditCardDetailsix: "",
+    netbankingAmountsix: "",
+    netbankingDetailsix: "",
+    chequeAmountsix: "",
+    chequeDetailssix: "",
+    phonepeAmountsix: "",
+    phonepeDetailsix: "",
+    agencyAmountsix: "",
+    paymentDatesix: "",
+    transactionIdsix: "",
+    transactionIDsix: "",
+    paymentModessix: [],
+    dueAmountLeftByCustomer: "",
 
     // Step 7
 
-    paymentStatus: "",
-    checkbox: "",
-    chequeNumber: "",
-    transactionId: "",
-    paymentDate: "",
-    dueAmount: "",
-    expectedClearDate: "",
-    comments: "",
+    fieldExecutiveRefs: [],
+    policyUnderwriter: '',
+    pucAvailable: '',
+    pucCertificateNumber: '',
+    pucStartDate: '',
+    pucEndDate: '',
+    remarks: '',
   });
 
   useEffect(() => {
@@ -323,7 +365,7 @@ const MultiStepForm = () => {
   };
 
   const upDateData = () => {
-    const data = JSON.parse(localStorage.getItem("rtoData")); // ❗ Add JSON.parse
+    const data = JSON.parse(localStorage.getItem("rtoData")); // ❗
     if (data) {
       updateFormData({
         rtoState: data.rtoState || "",
@@ -363,6 +405,31 @@ const MultiStepForm = () => {
     // console.clear()
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setShowErrors(false);
+
+    const temp = JSON.parse(localStorage.getItem("stepData")) || formData;
+
+    let fieldName;
+    const isValid = requiredFields.every((field) => {
+      const value = temp[field];
+      fieldName = field;
+      return value !== undefined && value.toString().trim() !== "";
+    });
+
+    if (!isValid) {
+      console.warn("Required Field", requiredFields);
+      console.warn("Please fill the required field", fieldName);
+      setShowErrors(true);
+      return;
+    }
+
+    // ✅ all required filled → call your real submit logic
+    handleSubmit();
+  };
+
+
   const prev = () => {
     if (prev === 1) {
       return;
@@ -380,7 +447,7 @@ const MultiStepForm = () => {
       {/* <h2 className="text-2xl mb-4 text-center">Chaturvedi Motors Form</h2> */}
       <StepIndicator currentStep={step} />
       <div className="max-w-[80vw] mx-auto p-6 mt-10  rounded shadow-lg">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onSubmit}>
           {step === 1 && (
             <StepOne
               formData={formData}

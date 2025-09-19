@@ -1,127 +1,160 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 
-const StepSeven = () => {
- const [stepData, setStepData] = useState({
- paymentStatus: "",
- checkbox: "",
- chequeNumber: "",
- transactionId: "",
- paymentDate: "",
- dueAmount: "",
- expectedClearDate: "",
- comments: ""
-   })
- 
- const handleChangeStep = (e) => {
-   const { name, type, checked, value } = e.target;
-   const temp = JSON.parse(localStorage.getItem('stepData')) || {};
-   const updated = { ...temp };
- 
-   if (type === "checkbox") {
-     if (checked) {
-       updated[name] = value;
-     } else {
-       delete updated[name]; // remove when unchecked
-     }
-   } else {
-     updated[name] = value;
-   }
- 
-   localStorage.setItem("stepData", JSON.stringify(updated));
-   setStepData(updated);
-   // handleChange()
- };
+const StepSeven = ({ setRequiredFields, showErrors }) => {
+  const [stepData, setStepData] = useState(() => {
+    // load saved values on mount
+    return JSON.parse(localStorage.getItem('stepData')) || {
+      callExecutiveRefs: [],
+      fieldExecutiveRefs: [],
+      policyUnderwriter: '',
+      pucAvailable: '',
+      pucCertificateNumber: '',
+      pucStartDate: '',
+      pucEndDate: '',
+      remarks: '',
+    };
+  });
 
   const callExecutivesOptions = [
-    { value: 'varsha_singhal', label: 'Varsha Singhal' },
-    { value: 'shipli_shukla', label: 'Shipli Shukla' },
-    { value: 'other_exec', label: '...' }
+    { value: 'Varsha Singhal', label: 'Varsha Singhal' },
+    { value: 'Sarita Kumari', label: 'Sarita Kumari' },
+    { value: 'Shilpi shukla', label: 'Shilpi shukla' },
+    { value: 'Radha Kumari', label: 'Radha Kumari' },
+    { value: 'Garima Yadav', label: 'Garima Yadav' },
+    { value: 'tanisha', label: 'Tanisha' },
+    { value: 'Anamika chaudhary', label: 'Anamika chaudhary' }
   ];
 
+
   const fieldExecutivesOptions = [
-    { value: 'yashpal_chaudhary', label: 'Yashpal Chaudhary' },
-    { value: 'other_field', label: '...' }
+    { value: 'Yashpal Chaudhary', label: 'Yashpal Chaudhary' },
+    { value: 'Self Office', label: 'Self Office' },
   ];
 
   const underwriterOptions = [
     { value: '', label: 'Select' },
-    { value: 'underwriter_1', label: 'Underwriter 1' },
-    { value: 'underwriter_2', label: 'Underwriter 2' }
+    { value: 'Prashant Kumar', label: 'Prashant Kumar' },
+    { value: 'Rishik', label: 'Rishik' },
+    { value: 'Sarita Kumari', label: 'Sarita Kumari' },
+    { value: 'Varsha Singhal', label: 'Varsha Singhal' },
+    { value: 'Varsha Singhal', label: 'Varsha Singhal' },
+    { value: 'Abhishek', label: 'Abhishek' },
   ];
+
 
   const pucOptions = [
-    { value: '', label: 'Select' },
+    { value: 'no', label: 'No' },
     { value: 'yes', label: 'Yes' },
-    { value: 'no', label: 'No' }
   ];
 
-  const handleChange = (e) => {
+  // for normal inputs/selects
+  const handleChangeStep = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const updated = { ...stepData, [name]: value };
+    setStepData(updated);
+    localStorage.setItem('stepData', JSON.stringify(updated));
   };
 
-const handleSelectChange = (selected, { name }) => {
-  // Update React state
-  setStepData(prev => ({ ...prev, [name]: selected }));
+  // for react-select
+  const handleSelectChange = (selected, { name }) => {
+    // if nothing selected, fallback to empty array
+    const valuesOnly = (selected || []).map(opt => opt.value);
 
-  // Update localStorage
-  const temp = JSON.parse(localStorage.getItem('stepData')) || {};
-  const updated = {
-    ...temp,
-    [name]: selected,
+    const updated = { ...stepData, [name]: valuesOnly };
+    setStepData(updated);
+    localStorage.setItem('stepData', JSON.stringify(updated));
   };
 
-  localStorage.setItem("stepData", JSON.stringify(updated));
-  setStepData(updated);
+  useEffect(() => {
+    let fields = [];
+
+    if (stepData.pucOptions === 'yes') {
+      fields.push('pucCertificateNumber', 'pucStartDate', 'pucEndDate');
+    }
+    fields.push('callExecutiveRefs', 'fieldExecutiveRefs', 'remarks');
+
+    setRequiredFields(fields);
+
+  }, [stepData, stepData.pucOptions]);
+
+  const isEmpty = (val) => {
+  if (Array.isArray(val)) return val.length === 0;
+  return val === undefined || val === null || val.toString().trim() === '';
 };
 
 
-     useEffect(() =>{
-        document.title = `Chaturvedi Motors Form || on Step7`
-      },[])
+
+  useEffect(() => {
+    document.title = `Chaturvedi Motors Form || on Step7`;
+  }, []);
 
   return (
-    <div className="capitalize p-4  rounded-xl shadow-sm bg-white space-y-4">
+    <div className="capitalize p-4 rounded-xl shadow-sm bg-white space-y-4">
+      {/* Top multi selects */}
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block font-medium mb-1">Call Executive Reference</label>
+          <label className="block font-medium mb-1">
+            Call Executive Reference
+          </label>
           <Select
             isMulti
             name="callExecutiveRefs"
             options={callExecutivesOptions}
-            value={stepData.callExecutiveRefs}
+            value={callExecutivesOptions.filter(opt =>
+              stepData.callExecutiveRefs?.includes(opt.value)
+            )}
             onChange={handleSelectChange}
-            className="text-sm"
+            classNamePrefix="react-select"
+            className={`w-full border custom-select px-4 py-2 ${showErrors && isEmpty(stepData.callExecutiveRefs) ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
           />
+          {showErrors && isEmpty(stepData.callExecutiveRefs) && (
+            <p className="text-sm text-red-500 mt-1">This field is required.</p>
+          )}
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Field Executive Reference</label>
+          <label className="block font-medium mb-1">
+            Field Executive Reference
+          </label>
           <Select
             isMulti
             name="fieldExecutiveRefs"
             options={fieldExecutivesOptions}
-            value={stepData.fieldExecutiveRefs}
+            value={fieldExecutivesOptions.filter(opt =>
+              stepData.fieldExecutiveRefs?.includes(opt.value) // ✅ matches state key
+            )}
             onChange={handleSelectChange}
-            className="text-sm"
+            classNamePrefix="react-select"
+            className={`w-full border custom-select px-4 py-2 ${showErrors && isEmpty(stepData.fieldExecutiveRefs) ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
           />
+          {showErrors && isEmpty(stepData.fieldExecutiveRefs) && (
+            <p className="text-sm text-red-500 mt-1">This field is required.</p>
+          )}
         </div>
       </div>
 
+      {/* Underwriter + PUC Available */}
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block font-medium mb-1">Policy Underwriter Executive Reference</label>
+          <label className="block font-medium mb-1">
+            Policy Underwriter Executive Reference
+          </label>
           <select
             name="policyUnderwriter"
             value={stepData.policyUnderwriter}
-            onChange={(e) => handleChangeStep(e)}
-            className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+            onChange={handleChangeStep}
+            className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.policyUnderwriter === "" && !stepData?.policyUnderwriter ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
           >
             {underwriterOptions.map((option) => (
-              <option key={option.value} value={option.value}>{option.label}</option>
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
             ))}
           </select>
+          {showErrors && stepData?.policyUnderwriter === "" && !stepData?.policyUnderwriter && (
+            <p className="text-sm text-red-500 mt-1">This field is required.</p>
+          )}
         </div>
 
         <div>
@@ -129,16 +162,71 @@ const handleSelectChange = (selected, { name }) => {
           <select
             name="pucAvailable"
             value={stepData.pucAvailable}
-            onChange={(e) => handleChangeStep(e)}
-            className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+            onChange={handleChangeStep}
+            className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.pucAvailable === "" && !stepData?.pucAvailable ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
           >
             {pucOptions.map((option) => (
-              <option key={option.value} value={option.value}>{option.label}</option>
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
             ))}
           </select>
+          {showErrors && stepData?.pucAvailable === "" && !stepData?.pucAvailable && (
+            <p className="text-sm text-red-500 mt-1">This field is required.</p>
+          )}
         </div>
       </div>
 
+      {/* PUC certificate number */}
+      {stepData.pucAvailable === 'yes' && (<>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-medium mb-1">PUC Certificate Number</label>
+            <input
+              type="text"
+              name="pucCertificateNumber"
+              placeholder="Enter PUC Certificate Number"
+              value={stepData.pucCertificateNumber}
+              onChange={handleChangeStep}
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.pucCertificateNumber === "" && !stepData?.pucCertificateNumber ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
+            />
+            {showErrors && stepData?.pucCertificateNumber === "" && !stepData?.pucCertificateNumber && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
+          </div>
+          <div>
+            <label className="block font-medium mb-1">PUC Start Date</label>
+            <input
+              type="date"
+              name="pucStartDate"
+              value={stepData.pucStartDate}
+              onChange={handleChangeStep}
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.pucStartDate === "" && !stepData?.pucStartDate ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
+            />
+            {showErrors && stepData?.pucStartDate === "" && !stepData?.pucStartDate && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
+          </div>
+        </div>
+
+        {/* PUC End Date */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-medium mb-1">PUC End Date</label>
+            <input
+              type="date"
+              name="pucEndDate"
+              value={stepData.pucEndDate}
+              onChange={handleChangeStep}
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.pucEndDate === "" && !stepData?.pucEndDate ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
+            />
+            {showErrors && stepData?.pucEndDate === "" && !stepData?.pucEndDate && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
+          </div>
+        </div>
+      </>)}
+      {/* Remarks */}
       <div>
         <label className="block font-medium mb-1">Remarks</label>
         <input
@@ -146,9 +234,12 @@ const handleSelectChange = (selected, { name }) => {
           name="remarks"
           placeholder="Enter remarks here"
           value={stepData.remarks}
-          onChange={(e) => handleChangeStep(e)}
-          className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
+          onChange={handleChangeStep}
+          className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.remarks === "" && !stepData?.remarks ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
         />
+        {showErrors && stepData?.remarks === "" && !stepData?.remarks && (
+          <p className="text-sm text-red-500 mt-1">This field is required.</p>
+        )}
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import handleSubmit from '../../handleSubmit';
+import StepSixcheck from './StepSixcheck';
 
-const StepSix = () => {
- 
+const StepSix = ({ formData = {}, setFormData = () => { }, setRequiredFields, showErrors }) => {
+  const [localData, setLocalData] = useState({ ...formData });
   const paymentOptions = [
     'Cash',
     'Cheque',
@@ -14,54 +15,142 @@ const StepSix = () => {
     'Netbanking',
     'QR Code',
   ];
-const [stepData, setStepData] = useState({
-paymentStatus: "",
-checkbox: "",
-chequeNumber: "",
-transactionId: "",
-paymentDate: "",
-dueAmount: "",
-expectedClearDate: "",
-comments: ""
+  const [stepData, setStepData] = useState({
+    paymentStatus: "",
+    checkbox: "",
+    chequeNumber: "",
+    transactionId: "",
+    paymentDate: "",
+    dueAmount: "",
+    expectedClearDate: "",
+    comments: "",
+    paymentModessix: [],
+    cashAmountsix: "",
+    neftAmountsix: "",
+    googlePayAmountsix: "",
+    googlePayDetailsix: "",
+    debitAmountsix: "",
+    debitCardDetailsix: "",
+    creditAmountsix: "",
+    creditCardsix: "",
+    creditCardDetailsix: "",
+    netbankingAmountsix: "",
+    netbankingDetailsix: "",
+    chequeAmountsix: "",
+    chequeDetailssix: "",
+    phonepeAmountsix: "",
+    phonepeDetailsix: "",
+    agencyAmountsix: "",
+    paymentDatesix: "",
+    transactionIdsix: "",
+    transactionIDsix: "",
+    dueAmountLeftByCustomer: "",
+    dueAmount: "",
   })
 
-const handleChangeStep = (e) => {
-  const { name, type, checked, value } = e.target;
-  const temp = JSON.parse(localStorage.getItem('stepData')) || {};
-  const updated = { ...temp };
 
-  if (type === "checkbox") {
-    if (checked) {
-      updated[name] = value;
-    } else {
-      delete updated[name]; // remove when unchecked
+  const stepDataoflocal = useMemo(() => {
+    return JSON.parse(localStorage.getItem("stepData")) || {};
+  }, [localStorage.getItem("stepData")]);
+  useEffect(() => {
+    let fields = [];
+
+    if (stepData.paymentStatus === 'Full Payment Received' || stepData.paymentStatus === 'Partial Payment Received') {
+
+
+      // Cash
+      if (stepData.paymentModessix?.includes("Cash")) {
+        fields.push("cashAmountsix");
+      }
+
+      // NEFT/RTGS
+      if (stepData.paymentModessix?.includes("NEFT/RTGS")) {
+        fields.push("neftAmountsix", "transactionIDsix"); // also push transactionID for NEFT
+      }
+
+      // Google Pay
+      if (stepData.paymentModessix?.includes("Google Pay")) {
+        fields.push("googlePayAmountsix", "googlePayDetailsix");
+      }
+
+      // Debit Card
+      if (stepData.paymentModessix?.includes("Debit Card")) {
+        fields.push("debitAmountsix", "debitCardDetailsix");
+      }
+
+      // Credit Card
+      if (stepData.paymentModessix?.includes("Credit Card")) {
+        fields.push("creditAmountsix", "creditCardsix");
+      }
+
+      // Netbanking
+      if (stepData.paymentModessix?.includes("Netbanking")) {
+        fields.push("netbankingAmountsix", "netbankingDetailsix");
+      }
+
+      // Cheque
+      if (stepData.paymentModessix?.includes("Cheque")) {
+        fields.push("chequeAmountsix", "chequeDetailssix");
+      }
+
+      // PhonePe
+      if (stepData.paymentModessix?.includes("PhonePe")) {
+        fields.push("phonepeAmountsix", "phonepeDetailsix");
+      }
+
+      if (stepDataoflocal?.paymentModessix?.length === 0) {
+        fields.push("paymentModessix")
+      }
+
+      fields.push("paymentDate")
+      // setRequiredFields(fields);
+    } else if (stepData.paymentStatus === 'Total Amount Due') {
+      // setRequiredFields(fields);
+      fields.push( "comments", "dueAmount", "expectedClearDate")
     }
-  } else {
-    updated[name] = value;
-  }
+    fields.push("agencyAmountsix", "paymentDatesix");
+    setRequiredFields(fields);
 
-  localStorage.setItem("stepData", JSON.stringify(updated));
-  setStepData(updated);
-  // handleChange()
-};
+  }, [stepDataoflocal.paymentModessix, stepDataoflocal, stepData.paymentStatus]);
 
-const handleCheckboxChange = (option) => {
-  const newMethods = stepData.paymentMethods.includes(option)
-    ? stepData.paymentMethods.filter((m) => m !== option)
-    : [...stepData.paymentMethods, option];
 
-  setStepData((prev) => {
-  const updated = {
-    ...prev,
-    paymentMethods: newMethods,
+  const handleChangeStep = (e) => {
+    const { name, type, checked, value } = e.target;
+    const temp = JSON.parse(localStorage.getItem('stepData')) || {};
+    const updated = { ...temp };
+
+    if (type === "checkbox") {
+      if (checked) {
+        updated[name] = value;
+      } else {
+        delete updated[name]; // remove when unchecked
+      }
+    } else {
+      updated[name] = value;
+    }
+
+    localStorage.setItem("stepData", JSON.stringify(updated));
+    setStepData(updated);
+    // handleChange()
   };
 
-  localStorage.setItem("stepData", JSON.stringify(updated));
-  return updated;
-});
+  const handleCheckboxChange = (option) => {
+    const newMethods = stepData.paymentMethods.includes(option)
+      ? stepData.paymentMethods.filter((m) => m !== option)
+      : [...stepData.paymentMethods, option];
 
-}; 
- 
+    setStepData((prev) => {
+      const updated = {
+        ...prev,
+        paymentMethods: newMethods,
+      };
+
+      localStorage.setItem("stepData", JSON.stringify(updated));
+      return updated;
+    });
+
+  };
+
 
   const {
     paymentStatus,
@@ -74,17 +163,17 @@ const handleCheckboxChange = (option) => {
     transactionId
   } = stepData;
 
-     useEffect(() =>{
-        document.title = `Chaturvedi Motors Form || on Step5`
-      },[])
+  useEffect(() => {
+    document.title = `Chaturvedi Motors Form || on Step5`
+  }, [])
 
   return (
     <div className="capitalize p-4   rounded-xl shadow-sm bg-white">
       <div className="mb-4">
         <label className="block font-medium">Payment Received Status</label>
         <select
-          className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
           name="paymentStatus"
+          className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.paymentStatus === "" && !stepData?.paymentStatus ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
           value={stepData.paymentStatus}
           onChange={(e) => handleChangeStep(e)}
         >
@@ -93,67 +182,31 @@ const handleCheckboxChange = (option) => {
           <option value="Partial Payment Received">Partial Payment Received</option>
           <option value="Total Amount Due">Total Amount Due</option>
         </select>
+        {showErrors && stepData?.paymentStatus === "" && !stepData?.paymentStatus && (
+          <p className="text-sm text-red-500 mt-1">This field is required.</p>
+        )}
       </div>
 
-      {(stepData.paymentStatus === 'Full Payment Received' || stepData.paymentStatus === 'Partial Payment Received') && (
+      {(stepData.paymentStatus === 'Full Payment Received') && (
+        <StepSixcheck formData={formData} setFormData={setFormData} setRequiredFields={setRequiredFields} showErrors={showErrors} paymentStatus={stepData.paymentStatus} />
+      )}
+
+      {(stepData.paymentStatus === 'Partial Payment Received') && (
         <>
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2">Payment by Customer</h3>
-            <div className="grid grid-cols-3 gap-2">
-              {paymentOptions.map((option) => (
-                <label key={option} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    name={option}
-                    checked={stepData?.paymentMethods?.includes(option)}
-                    onChange={(e) => {
-                      handleCheckboxChange(option)
-                      handleChangeStep(e)
-                    }}
-                  />
-                  {option}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {stepData?.paymentMethods?.includes("Cheque") && (
-            <div className="mb-4">
-              <label className="block font-medium">Cheque Number</label>
-              <input
-                type="text"
-                className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
-                name="chequeNumber"
-                placeholder="Enter Cheque Number"
-                value={stepData.chequeNumber}
-                onChange={(e) => handleChangeStep(e)}
-              />
-            </div>
-          )}
-
-          {["PhonePe", "Google Pay", "QR Code", "Netbanking", "NEFT/RTGS"].some(method => stepData?.paymentMethods?.includes(method)) && (
-            <div className="mb-4">
-              <label className="block font-medium">Transaction ID / Reference No.</label>
-              <input
-                type="text"
-                className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
-                name="transactionId"
-                placeholder="Enter Transaction ID"
-                value={stepData.transactionId}
-                onChange={(e) => handleChangeStep(e)}
-              />
-            </div>
-          )}
+          <StepSixcheck formData={formData} setFormData={setFormData} setRequiredFields={setRequiredFields} showErrors={showErrors} paymentStatus={stepData.paymentStatus} />
 
           <div className="mb-4">
             <label className="block font-medium">Date of Payment By Customer</label>
             <input
               type="date"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
               name="paymentDate"
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.paymentDate === "" && !stepData?.paymentDate ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.paymentDate}
               onChange={(e) => handleChangeStep(e)}
             />
+            {showErrors && stepData?.paymentDate === "" && !stepData?.paymentDate && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </>
       )}
@@ -164,39 +217,50 @@ const handleCheckboxChange = (option) => {
             <label className="block font-medium">Due Amount Left By Customer</label>
             <input
               type="text"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
               name="dueAmount"
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.dueAmount === "" && !stepData?.dueAmount ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               placeholder="Enter Due Amount"
               value={stepData.dueAmount}
               onChange={(e) => handleChangeStep(e)}
             />
+            {showErrors && stepData?.dueAmount === "" && !stepData?.dueAmount && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
 
           <div>
             <label className="block font-medium">Expected Pending Payment Clear Date</label>
             <input
               type="date"
-              className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
               name="expectedClearDate"
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.expectedClearDate === "" && !stepData?.expectedClearDate ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
               value={stepData.expectedClearDate}
               onChange={(e) => handleChangeStep(e)}
             />
+            {showErrors && stepData?.expectedClearDate === "" && !stepData?.expectedClearDate && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
           </div>
         </div>
       )}
 
       {(stepData.paymentStatus === 'Partial Payment Received' || stepData.paymentStatus === 'Total Amount Due') && (
-        <div className="mb-4">
-          <label className="block font-medium">Pending Payment Comments</label>
-          <textarea
-            className="w-full rounded-[10px] border px-4 py-2 border-[#e6e6e6] "
-            name="comments"
-            rows="3"
-            placeholder="Enter Comment"
-            value={stepData.comments}
-            onChange={(e) => handleChangeStep(e)}
-          />
-        </div>
+        <>
+          <div className="mb-4">
+            <label className="block font-medium">Pending Payment Comments</label>
+            <textarea
+              name="comments"
+              className={`w-full border custom-select px-4 py-2 ${showErrors && stepData?.comments === "" && !stepData?.comments ? "border-red-500" : "border-[#e6e6e6]"} rounded`}
+              rows="3"
+              placeholder="Enter Comment"
+              value={stepData.comments}
+              onChange={(e) => handleChangeStep(e)}
+            />
+            {showErrors && stepData?.comments === "" && !stepData?.comments && (
+              <p className="text-sm text-red-500 mt-1">This field is required.</p>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

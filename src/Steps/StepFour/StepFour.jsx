@@ -143,32 +143,7 @@ const StepFour = ({ setRequiredFields, requiredFields, showErrors }) => {
 
   }, []);
 
-  // useEffect(() => {
-  //   let fields = []
-  //   // Optionally define required fields
-  //   if (stepData.paCover === "Yes") {
-  //     fields.push("pacertificateNumber", "paStartDate", "paEndDate", "paCoverAmount",);
-  //   }
-  //   if (stepData?.policyType === "OD only Policy") {
-  //     fields.push("newODPolicyEndDate", "newODPolicyStartDate")
-  //   }
-  //   fields.push(
-  //     "newTPPolicyStartDate",
-  //     "newTPPolicyEndDate",
-  //     "ncbNewPolicy",
-  //     "brokerAgencyName",
-  //     "policyNumber",
-  //     "insurerName",
-  //     "policyIssueDate",
-  //     "idv",
-  //     "odAmount",
-  //     "tpAmount",
-  //     "gstAmount",
-
-
-  //   );
-  //   setRequiredFields(fields);
-  // }, [])
+ 
 
   useEffect(() => {
     let fields = [];
