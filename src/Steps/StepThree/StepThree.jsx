@@ -46,22 +46,22 @@ const StepThree = ({setRequiredFields, requiredFields, showErrors }) => {
       return;
     }
 
-    if (stepData?.previousPolicy === "Yes") {
-      if (stepData?.policyType === "OD Policy") {
+    if (stepData?.prevPolicyType === "Yes") {
+      if (stepData?.prevPolicyType === "OD Policy") {
         if (stepData?.previousPolicy === "No") {
           fields.push("ncbNewPolicy")
         }
         fields.push("insurerName", "policyNumber", "odPolicyStartDate", "odPolicyEndDate")
-      } else if (stepData?.policyType === "TP Policy") {
+       } else if (stepData?.prevPolicyType === "TP Policy") {
         fields.push("insurerName", "policyNumber", "tpPolicyStartDate", "tpPolicyEndDate")
-      } else if (stepData?.policyType === "Package Policy") {
+       } else if (stepData?.prevPolicyType === "Package Policy") {
         fields.push("insurerName", "policyNumber", "prevoiusPolicyStartDate", "prevoiusPolicyEndDate")
       }
       fields.push("policyType","prevPolicyType",);
     }
 
     setRequiredFields(fields);
-  }, [stepData?.previousPolicy, stepData?.policyType, stepData?.previousPolicy, stepData?.proposalType]);
+  }, [stepData?.previousPolicy, stepData?.prevPolicyType, stepData?.previousPolicy, stepData?.proposalType]);
 
   useEffect(() => {
     document.title = `Chaturvedi Motors Form || on Step3`
@@ -115,7 +115,7 @@ const StepThree = ({setRequiredFields, requiredFields, showErrors }) => {
           <select id="insurerName"
             className={`w-full border custom-select px-4 py-2 border-[#e6e6e6] rounded ${showErrors && stepData?.insurerName === "" ? "border-red-500" : "border-[#e6e6e6]"}`}
             name="insurerName"
-            value={stepData?.insurerName}
+            value={stepData?.insurerName} 
             onChange={handleChangeStep}
           >
             <option value="Acko General Insurance Limited">Acko General Insurance Limited</option>

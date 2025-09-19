@@ -380,7 +380,7 @@ const StepOne = ({ setRequiredFields, requiredFields, showErrors, setShowErrors 
                     }}
                     inputMode="numeric"
                     pattern="\d*"
-                    className={`w-full border px-4 py-2 ${isError("pincode") ? "border-red-500" : "border-[#e6e6e6]"}  border-[#e6e6e6] rounded`}
+                    className={`w-full border px-4 py-2 ${showErrors && stepData?.pincode < 6 ? "border-red-500" : "border-[#e6e6e6]"}  border-[#e6e6e6] rounded`}
                     required
                   />
 
@@ -608,12 +608,12 @@ const StepOne = ({ setRequiredFields, requiredFields, showErrors, setShowErrors 
                 }}
                 inputMode="numeric"
                     pattern="\d*"
-                className={`w-full border px-4 py-2 ${isError("address") ? "border-red-500" : "border-[#e6e6e6]"}  border-[#e6e6e6] rounded`}
+                className={`w-full border px-4 py-2 ${showErrors && stepData?.pincode < 6 ? "border-red-500" : "border-[#e6e6e6]"}  border-[#e6e6e6] rounded`}
                 required
               />
 
               {showErrors && stepData?.pincode?.length < 6 && (
-                <p className="text-sm text-red-500 mt-1">Please fill correct Pincode</p>
+                <p className="text-sm text-red-500 mt-1">Please fill atleast 6 number</p>
               )}
             </div>
           </div>
