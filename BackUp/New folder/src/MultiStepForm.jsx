@@ -10,132 +10,137 @@ import {
 } from "./Steps";
 import StepIndicator from "./StepIndicator";
 import handleSubmit from "./handleSubmit";
+import getSession from "./getSession/getSession";
 
 const getInitialFormData = () => {
   const saved = localStorage.getItem("chaturvediFormData");
   return saved
     ? JSON.parse(saved)
     : {
-        //Step 1
-        customertype: "",
-        title: "",
-        customername: "",
-        fatherName: "",
-        dob: "",
-        primaryPhone: "",
-        whatsappSame: "",
-        whatsappNumber: "",
-        contact3: "",
-        contact4: "",
-        pincode: "",
-        country: "",
-        state: "",
-        city: "",
-        locality: "",
-        address: "",
-        serviceBook: "",
-        companyName: "",
-        ucName: "",
+      //Step 1
+      customertype: "",
+      title: "",
+      customername: "",
+      fatherName: "",
+      dob: "",
+      primaryPhone: "",
+      whatsappSame: "",
+      whatsappNumber: "",
+      contact3: "",
+      contact4: "",
+      pincode: "",
+      country: "",
+      state: "",
+      city: "",
+      locality: "",
+      address: "",
+      serviceBook: "",
+      companyName: "",
+      ucName: "",
 
-        //Step 2
-        proposalType: "",
-        policyType: "",
-        receiptNumber: "",
-        receiptDate: "",
-        vehicleYear: "",
-        registrationNumber: "",
-        registrationDate: "",
-        chassisNumber: "",
-        engineNumber: "",
-        manufacturingYear: "",
-        rtoState: "",
-        rtoCity: "",
-        product: "",
-        manufacturerType: "",
-        model: "",
-        varience: "",
-        fueltype: "",
+      //Step 2
+      proposalType: "",
+      policyType: "",
+      receiptNumber: "",
+      receiptDate: "",
+      vehicleYear: "",
+      registrationNumber: "",
+      registrationDate: "",
+      chassisNumber: "",
+      engineNumber: "",
+      manufacturingYear: "",
+      rtoState: "",
+      rtoCity: "",
+      product: "",
+      manufacturerType: "",
+      model: "",
+      varience: "",
+      fueltype: "",
 
-        //Step 3
+      //Step 3
 
-        previousPolicy: "",
-        prevPolicyType: "",
-        insurerName: "",
-        policyNumber: "",
-        odPolicyStartDate: "",
-        odPolicyEndDate: "",
-        tpPolicyStartDate: "",
-        tpPolicyEndDate: "",
-        newOdPolicyStartDate: "",
-        newOdPolicyEndDate: "",
-        ncbPolicy: "",
-        newTpPolicyStartDate: "",
-        newTpPolicyEndDate: "",
-        prevoiusPolicyStartDate: "",
-        prevoiusPolicyEndDate: "",
+      previousPolicy: "",
+      prevPolicyType: "",
+      insurerName: "",
+      policyNumber: "",
+      odPolicyStartDate: "",
+      odPolicyEndDate: "",
+      tpPolicyStartDate: "",
+      tpPolicyEndDate: "",
+      newOdPolicyStartDate: "",
+      newOdPolicyEndDate: "",
+      ncbPolicy: "",
+      newTpPolicyStartDate: "",
+      newTpPolicyEndDate: "",
+      prevoiusPolicyStartDate: "",
+      prevoiusPolicyEndDate: "",
 
-        // Step 4
+      // Step 4
 
-        newPolicyStartDate: "",
-        newPolicyEndDate: "",
-        ncbNewPolicy: "",
-        brokerAgencyName: "",
-        policyNumber: "",
-        insurerName: "",
-        policyIssueDate: "",
-        idv: "",
-        paCover: "",
-        odAmount: "",
-        tpAmount: "",
-        netTotal: "",
-        gstAmount: "",
-        totalPremium: "",
-        breakingCharge: "",
-        waiverAmount: "",
-        netPayable: "",
+      newPolicyStartDate: "",
+      newPolicyEndDate: "",
+      ncbNewPolicy: "",
+      brokerAgencyName: "",
+      policyNumber: "",
+      insurerName: "",
+      policyIssueDate: "",
+      idv: "",
+      paCover: "",
+      odAmount: "",
+      tpAmount: "",
+      netTotal: "",
+      gstAmount: "",
+      totalPremium: "",
+      breakingCharge: "",
+      waiverAmount: "",
+      netPayable: "",
+      addons: [],
 
-        // Step 5
+      // Step 5
 
-        checkbox: "",
-        cashAmount: "",
-        neftAmount: "",
-        googlePayAmount: "",
-        googlePayDetail: "",
-        debitAmount: "",
-        debitCardDetail: "",
-        creditAmount: "",
-        creditCardDetail: "",
-        netbankingAmount: "",
-        netbankingDetail: "",
-        chequeAmount: "",
-        phonepeAmount: "",
-        phonepeDetail: "",
-        agencyAmount: "",
-        paymentDate: "",
-        transactionId: "",
+      checkbox: "",
+      cashAmount: "",
+      neftAmount: "",
+      googlePayAmount: "",
+      googlePayDetail: "",
+      debitAmount: "",
+      debitCardDetail: "",
+      creditAmount: "",
+      creditCardDetail: "",
+      netbankingAmount: "",
+      netbankingDetail: "",
+      creditCard: "",
+      chequeAmount: "",
+      chequeDetails: "",
+      phonepeAmount: "",
+      phonepeDetail: "",
+      agencyAmount: "",
+      paymentDate: "",
+      transactionId: "",
+      transactionID: "",
 
-        // Step 6
+      // Step 6
 
-        paymentStatus: "",
-        checkbox: "",
-        chequeNumber: "",
-        transactionId: "",
-        paymentDate: "",
-        dueAmount: "",
-        expectedClearDate: "",
-        comments: "",
+      paymentStatus: "",
+      checkbox: "",
+      chequeNumber: "",
+      transactionId: "",
+      paymentDate: "",
+      dueAmount: "",
+      expectedClearDate: "",
+      comments: "",
 
-        // Step 7
+      // Step 7
 
-        paymentStatus: "",
-        checkbox: "",
-        chequeNumber: "",
-        transactionId: "",
-        paymentDate: "",
-        dueAmount: "",
-        expectedClearDate: "",
-        comments: "",
-      };
+      paymentStatus: "",
+      checkbox: "",
+      chequeNumber: "",
+      transactionId: "",
+      paymentDate: "",
+      dueAmount: "",
+      expectedClearDate: "",
+      comments: "",
+    };
 };
 
 const MultiStepForm = () => {
@@ -197,6 +202,7 @@ const MultiStepForm = () => {
     newTpPolicyEndDate: "",
     prevoiusPolicyStartDate: "",
     prevoiusPolicyEndDate: "",
+    addons: [],
 
     // Step 4
 
@@ -229,14 +235,17 @@ const MultiStepForm = () => {
     debitCardDetail: "",
     creditAmount: "",
     creditCardDetail: "",
+    creditCard: "",
     netbankingAmount: "",
     netbankingDetail: "",
     chequeAmount: "",
+    chequeDetails: "",
     phonepeAmount: "",
     phonepeDetail: "",
     agencyAmount: "",
     paymentDate: "",
     transactionId: "",
+    transactionID: "",
 
     // Step 6
 
@@ -343,7 +352,8 @@ const MultiStepForm = () => {
         return value !== undefined && value.toString().trim() !== "";
       });
       if (!isValid) {
-        console.log(`Please fill the required field`, fieldName)
+        console.warn(`Required Field`, requiredFields)
+        console.warn(`Please fill the required field`, fieldName)
         setShowErrors(true);
         return;
       }
@@ -459,7 +469,7 @@ const MultiStepForm = () => {
                 Previous
               </button>
             )}
-            {step <= 5 && (
+            {step <= 6 && (
               <button
                 type="button"
                 onClick={next}
@@ -469,7 +479,7 @@ const MultiStepForm = () => {
               </button>
             )}
 
-            {step > 5 && (
+            {step > 6 && (
               <button
                 type="submit"
                 className="bg-green-600 cursor-pointer text-white px-6 py-2 rounded ml-auto"

@@ -20,6 +20,7 @@
     "react-loaders": "^3.0.1",
     "react-router-dom": "^7.7.0",
     "react-select": "^5.10.2",
+    "sweetalert2": "^11.23.0",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {

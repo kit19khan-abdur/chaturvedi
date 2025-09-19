@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 const getTomorrowDate = () => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -94,14 +96,10 @@ const handleSubmit = async (e) => {
     breakingCharge: finalData.breakingCharge || "",
     waiverAmount: finalData.waiverAmount || "",
     netPayable: finalData.netPayable || "",
-    paymentModesOptions: Array.isArray(finalData.paymentModesOptions)
-      ? finalData.paymentModesOptions.join(" ")
-      : finalData.paymentModesOptions || "",
+    paymentModesOptions: (finalData.paymentModes || []).join(", "),
     agencyAmount: finalData.agencyAmount || "",
     paymentDate: toISTDateString(finalData.paymentDate) || "",
-    paymentModes: Array.isArray(finalData.paymentModes)
-      ? finalData.paymentModes.join(" ")
-      : finalData.paymentModes || "",
+    paymentModes: (finalData.paymentModes || []).join(", "),
     cashAmount: finalData.cashAmount || "",
     neftAmount: finalData.neftAmount || "",
     googlePayAmount: finalData.googlePayAmount || "",
@@ -116,9 +114,7 @@ const handleSubmit = async (e) => {
     phonepeAmount: finalData.phonepeAmount || "",
     phonepeDetail: finalData.phonepeDetail || "",
     paymentStatus: finalData.paymentStatus || "",
-    paymentMethods: Array.isArray(finalData.paymentMethods)
-      ? finalData.paymentMethods.join(", ")
-      : finalData.paymentMethods || "",
+    paymentMethods: (finalData.paymentMethods || []).join(", "),
     chequeNumber: finalData.chequeNumber || "",
     transactionId: finalData.transactionId || "",
     expectedClearDate: toISTDateString(finalData.expectedClearDate) || "",
@@ -157,18 +153,34 @@ const handleSubmit = async (e) => {
 
     const data = await res.json();
 
-    if (res.ok && data) {
-      alert("Form submitted successfully!");
+    if (data.Message === "Success") {
+      // alert("Form submitted successfully!");
       console.log("API Response:", data);
-      localStorage.removeItem("chaturvediFormData");
+      // localStorage.removeItem("chaturvediFormData");
+      Swal.fire({
+        title: 'Success!',
+        text: `${data?.Details ? data.Details : data.Message}`,
+        icon: 'success',
+        confirmButtonColor: '#008d3fff',
+        confirmButtonText: 'OK',
+      });
       // localStorage.clear('stepData')
     } else {
       console.error("Submission failed:", data);
-      alert("Something went wrong. Please try again.");
+      // alert("Something went wrong. Please try again.");
+      Swal.fire({
+        title: 'Error',
+        text: `${data?.Details ? data.Details : data.Message}`,
+        icon: 'error',
+        confirmButtonColor: '#970000ff',
+        confirmButtonText: 'OK',
+      });
     }
   } catch (error) {
     console.error("Error submitting form:", error);
     alert("Error connecting to server.");
+  }finally{
+    // localStorage.removeItem("stepData")
   }
 };
 
