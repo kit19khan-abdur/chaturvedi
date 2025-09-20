@@ -38,3 +38,9 @@ input,
 select {
   transition: outline-color 0.2s ease;
 }
+
+
+::selection {
+  background-color: #0da25f;
+  color: #fff;
+}

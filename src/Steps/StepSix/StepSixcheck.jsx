@@ -13,8 +13,7 @@ const paymentModessixList = [
 ];
 
 const StepSixcheck = ({ setFormData = () => { }, setRequiredFields, showErrors, paymentStatus }) => {
-    let formData = JSON.parse(localStorage.getItem("localData")) || [];
-    const [stepData, setStepData] = useState({ ...formData });
+    let formData = JSON.parse(localStorage.getItem("stepData")) || {};
     const [localData, setLocalData] = useState({
         checkboxsix: "",
         cashAmountsix: "",
@@ -40,7 +39,7 @@ const StepSixcheck = ({ setFormData = () => { }, setRequiredFields, showErrors, 
     })
 
     useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem("localData"));
+        const saved = JSON.parse(localStorage.getItem("stepData"));
         if (saved) {
             setLocalData(saved);
             setLocalData((prev) => ({ ...prev, ...saved }));
@@ -51,30 +50,19 @@ const StepSixcheck = ({ setFormData = () => { }, setRequiredFields, showErrors, 
     const handleChangeStep = (e) => {
         const { name, type, checked, value } = e.target;
 
-        // get whatever we saved before
-        const temp = JSON.parse(localStorage.getItem("localData")) || { ...localData };
-        const updated = { ...temp };
+        // always treat storage as an object
+        const temp = JSON.parse(localStorage.getItem("stepData")) || {};
+        const updated = {
+            ...temp,
+            ...localData, // include current localData so nothing gets lost
+            [name]: type === "checkbox" ? (checked ? value : "") : value
+        };
 
-        if (type === "checkbox") {
-            // if you really want to save checkboxes individually
-            if (checked) {
-                updated[name] = value;
-            } else {
-                delete updated[name];
-            }
-        } else {
-            updated[name] = value;
-        }
-
-        // save to localStorage correctly
-        localStorage.setItem("localData", JSON.stringify(updated));
-
-        // update local state
+        // write to both
+        localStorage.setItem("stepData", JSON.stringify(updated));
         setLocalData(updated);
-
-        // still update localData so parent receives it
-        handleChange(e);
     };
+
 
 
 
@@ -84,7 +72,7 @@ const StepSixcheck = ({ setFormData = () => { }, setRequiredFields, showErrors, 
 
         // Cash
         if (localData.paymentModessix?.includes("Cash")) {
-            fields.push("cashAmountsix");
+            fields.push("cashAmountsix", "agencyAmountsix", "paymentDatesix");
         }
 
         // NEFT/RTGS
@@ -124,12 +112,18 @@ const StepSixcheck = ({ setFormData = () => { }, setRequiredFields, showErrors, 
 
 
 
-        // Always required fields
-        fields.push("agencyAmountsix", "paymentDatesix");
-
         setRequiredFields(fields);
 
     }, [localData.paymentModessix, localData]);
+
+useEffect(() => {
+  const saved = JSON.parse(localStorage.getItem("stepData"));
+  if (saved) {
+    setLocalData(prev => ({ ...prev, ...saved }));
+  }
+}, []);
+
+
 
     // Sync localData back to parent in real time
 
@@ -152,7 +146,7 @@ const StepSixcheck = ({ setFormData = () => { }, setRequiredFields, showErrors, 
                 // repeat for other modes as needed
             }
 
-            localStorage.setItem("localData", JSON.stringify(updated));
+            localStorage.setItem("stepData", JSON.stringify(updated));
             return updated;
         });
     };
@@ -183,7 +177,7 @@ const StepSixcheck = ({ setFormData = () => { }, setRequiredFields, showErrors, 
         <div className="capitalize grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Payment Mode Checkboxes */}
             <div className="col-span-2">
-                <h2 className="font-semibold text-lg mb-2">Mode of Payment to Insurance Company</h2>
+                <h2 className="font-semibold text-lg mb-2">Mode of Payment to Insurance Company Six</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {paymentModessixList.map((mode) => (
                         <label key={mode} className="flex items-center space-x-2">

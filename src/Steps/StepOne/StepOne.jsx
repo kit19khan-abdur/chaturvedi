@@ -16,8 +16,8 @@ const StepOne = ({ setRequiredFields, requiredFields, showErrors, setShowErrors 
   };
 
   const [stepData, setStepData] = useState({
-    customertype: "",
-    title: "",
+    customertype: "Individual",
+    title: "M/s",
     customername: "",
     fatherName: "",
     dob: "",
@@ -38,18 +38,16 @@ const StepOne = ({ setRequiredFields, requiredFields, showErrors, setShowErrors 
     ucName: "",
   })
 
-
-
-
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("stepData"));
-    if (storedData) {
-      setStepData(storedData);
-      setPinCode(storedData.pincode || "");
-      setPostCode(storedData.pincode || "");
-    }
-  }, []);
-
+useEffect(() => {
+  const saved = JSON.parse(localStorage.getItem("stepData"));
+  if (saved) {
+    setStepData(saved);
+    setPinCode(saved.pincode || "");
+    setPostCode(saved.pincode || "");
+  } else {
+    localStorage.setItem("stepData", JSON.stringify(stepData));
+  }
+}, []);;
 
 
 
@@ -67,10 +65,10 @@ const StepOne = ({ setRequiredFields, requiredFields, showErrors, setShowErrors 
       if (result) {
         setStepData((prev) => ({
           ...prev,
-          country: details.country || "",
-          state: details.state || "",
-          city: details.city || "",
-          locality: Array.isArray(details.locality) ? details.locality[0] : details.locality || "", // default to first if array
+          country: details?.country || "",
+          state: details?.state || "",
+          city: details?.city || "",
+          locality: Array.isArray(details?.locality) ? details?.locality[0] : details?.locality || "", // default to first if array
         }));
       }
 
@@ -592,14 +590,14 @@ const StepOne = ({ setRequiredFields, requiredFields, showErrors, setShowErrors 
                   setPostCode(numericValue);
                   setPinCode(numericValue);
                   // ✅ Update stepData correctly
-                      handleChangeStep({
-                        target: {
-                          name: "pincode",
-                          value: numericValue,
-                        },
-                      });
+                  handleChangeStep({
+                    target: {
+                      name: "pincode",
+                      value: numericValue,
+                    },
+                  });
 
-                      
+
                   if (numericValue?.length > 5) {
                     fetchDataFromPost(numericValue);
                   } else {
@@ -607,7 +605,7 @@ const StepOne = ({ setRequiredFields, requiredFields, showErrors, setShowErrors 
                   }
                 }}
                 inputMode="numeric"
-                    pattern="\d*"
+                pattern="\d*"
                 className={`w-full border px-4 py-2 ${showErrors && stepData?.pincode < 6 ? "border-red-500" : "border-[#e6e6e6]"}  border-[#e6e6e6] rounded`}
                 required
               />

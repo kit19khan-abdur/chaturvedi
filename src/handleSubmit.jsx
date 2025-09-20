@@ -23,6 +23,13 @@ const toISTDateString = (dateInput) => {
 const handleSubmit = async () => {
   const finalData = JSON.parse(localStorage.getItem("stepData")) || {};
 
+  /**
+ * Handles form submission by constructing the payload as per API expectations
+ * and sending the request to the server.
+ *
+ * @returns {Promise} A promise that resolves with the server response.
+ */
+
   // Construct the payload as per API expectations
   const payload = {
     Username: "SATYA1060025",
@@ -30,14 +37,14 @@ const handleSubmit = async () => {
     PersonName: finalData.customername,
     MobileNo: finalData.primaryPhone,
     MobileNo1: finalData.contact3 || "",
-    MobilNo2: finalData.contact4 || "",
+    MobileNo2: finalData.contact4 || "",
     CountryCode1: "+91",
     CountryCode2: "+91",
     whatsappNumber: finalData.whatsappNumber || "",
     whatsappSame: finalData.whatsappSame || "",
     whatsappSameCor: finalData.whatsappSameCor || "",
     PinCode: finalData.pincode || "",
-    Title: finalData.title || "",
+    Title: finalData?.customertype === "Individual" ? finalData?.title : "M/s",
     Country: finalData.country || "",
     City: finalData.city || "",
     ncbPolicy: finalData.ncbPolicy || "",
@@ -46,8 +53,8 @@ const handleSubmit = async () => {
     totalPremium: finalData.totalPremiumWithGst || "",
     brokerAgencyName: finalData.brokerAgencyName || "",
     locality: finalData.locality || "",
-    OdPolicyStartDate: finalData.odPolicyStartDate || "", // Add this
-    OdPolicyEndDate: finalData.odPolicyEndDate || "", // Add this
+    OdPolicyStartDate: toISTDateString(finalData.odPolicyStartDate) || "", // Add this
+    OdPolicyEndDate: toISTDateString(finalData.odPolicyEndDate) || "", // Add this
     ResidentialAddress: finalData.address || "",
     newPolicyStartDate: toISTDateString(finalData.newPolicyStartDate) || "", // Add this
     newPolicyEndDate: toISTDateString(finalData.newPolicyEndDate) || "",     // Add this
@@ -86,7 +93,7 @@ const handleSubmit = async () => {
     policyIssueDate: toISTDateString(finalData.policyIssueDate) || "",
     idv: finalData.idv || "",
     paCover: finalData.paCover || "",
-    addon: finalData.addon || "",
+    addon: (finalData.addons || []).join(", "),
     odAmount: finalData.odAmount || "",
     tpAmount: finalData.tpAmount || "",
     netTotal: finalData.netTotal || "",
@@ -122,8 +129,8 @@ const handleSubmit = async () => {
     policyUnderwriter: finalData.policyUnderwriter || '',
     pucAvailable: finalData.pucAvailable || '',
     pucCertificateNumber: finalData.pucCertificateNumber || '',
-    pucStartDate: finalData.pucStartDate || '',
-    pucEndDate: finalData.pucEndDate || '',
+    pucStartDate: toISTDateString(finalData.pucStartDate) || '',
+    pucEndDate: toISTDateString(finalData.pucEndDate) || '',
     remarks: finalData.remarks || '',
     cashAmountsix: finalData.cashAmountsix,
     neftAmountsix: finalData.neftAmountsix,
@@ -141,7 +148,7 @@ const handleSubmit = async () => {
     phonepeAmountsix: finalData.phonepeAmountsix,
     phonepeDetailsix: finalData.phonepeDetailsix,
     agencyAmountsix: finalData.agencyAmountsix,
-    paymentDatesix: finalData.paymentDatesix,
+    paymentDatesix: toISTDateString(finalData.paymentDatesix) || "",
     transactionIdsix: finalData.transactionIdsix,
     transactionIDsix: finalData.transactionIDsix,
     SourceName: "Chaturvedi Motors Form",
@@ -152,11 +159,12 @@ const handleSubmit = async () => {
     NextStatusDate: getTomorrowDate(),
     Time: "10:02:00",
     Amount: "0",
-    FollowupRemarks: "Chaturvedi Motors Form",
-    Remarks: "Chaturvedi Motors Form",
+    FollowupRemarks: finalData.remarks || "",
+    Remarks: finalData.remarks || "",
     LeadNo: "0",
-    Update: "0"
+    Update: "1"
   };
+  // "Chaturvedi Motors Form"
 
   try {
     const res = await fetch("https://sipapi.crmapp.in.net/Lead/FB8BF7C6-D8D5-464A-A274-5258CC63C157/AddLeadAPI", {
