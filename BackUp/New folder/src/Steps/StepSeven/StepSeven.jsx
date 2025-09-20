@@ -79,10 +79,13 @@ const StepSeven = ({ setRequiredFields, showErrors }) => {
   }, [stepData, stepData.pucOptions]);
 
   const isEmpty = (val) => {
-  if (Array.isArray(val)) return val.length === 0;
-  return val === undefined || val === null || val.toString().trim() === '';
-};
+    if (Array.isArray(val)) return val.length === 0;
+    return val === undefined || val === null || val.toString().trim() === '';
+  };
 
+  useEffect(() => {
+    console.clear()
+  }, [stepData])
 
 
   useEffect(() => {
@@ -101,7 +104,7 @@ const StepSeven = ({ setRequiredFields, showErrors }) => {
             isMulti
             name="callExecutiveRefs"
             options={callExecutivesOptions}
-            value={callExecutivesOptions.filter(opt =>
+            value={callExecutivesOptions.filter((opt, index) =>
               stepData.callExecutiveRefs?.includes(opt.value)
             )}
             onChange={handleSelectChange}
@@ -229,9 +232,10 @@ const StepSeven = ({ setRequiredFields, showErrors }) => {
       {/* Remarks */}
       <div>
         <label className="block font-medium mb-1">Remarks</label>
-        <input
+        <textarea
           type="text"
           name="remarks"
+          height="350px"
           placeholder="Enter remarks here"
           value={stepData.remarks}
           onChange={handleChangeStep}

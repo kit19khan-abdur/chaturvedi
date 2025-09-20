@@ -11,15 +11,17 @@ import {
 import StepIndicator from "./StepIndicator";
 import handleSubmit from "./handleSubmit";
 import getSession from "./getSession/getSession";
+import Swal from "sweetalert2";
 
 const getInitialFormData = () => {
   const saved = localStorage.getItem("chaturvediFormData");
+  const stepData = JSON.parse(localStorage.getItem("stepData"));
   return saved
     ? JSON.parse(saved)
     : {
       //Step 1
-      customertype: "",
-      title: "",
+      customertype: "Individual",
+      title: stepData?.customertype === "Individual" ? stepData?.title : "M/s",
       customername: "",
       fatherName: "",
       dob: "",
@@ -170,9 +172,11 @@ const MultiStepForm = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(getInitialFormData);
   const [showErrors, setShowErrors] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const saved = JSON.parse(localStorage.getItem("stepData"));
   const [stepData, setStepData] = useState({
-    customertype: "",
-    title: "",
+    customertype: "Individual",
+    title: saved?.customertype === "Individual" ? saved?.title : "M/s",
     customername: "",
     fatherName: "",
     dob: "",
@@ -323,6 +327,10 @@ const MultiStepForm = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.clear()
+  }, [stepData])
+
   // ✅ Handles regular input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -397,15 +405,20 @@ const MultiStepForm = () => {
         console.warn(`Required Field`, requiredFields)
         console.warn(`Please fill the required field`, fieldName)
         setShowErrors(true);
+        Swal.fire({
+          title: 'Wait!',
+          text: `Please Fill the Required Field ${fieldName}`,
+          icon: 'warning',
+          confirmButtonColor: '#976f00',
+          confirmButtonText: 'OK',
+        });
         return;
       }
       setStep((prev) => prev + 1);
     }, 100);
-    // console.log(showErrors)
-    // console.clear()
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setShowErrors(false);
 
@@ -422,11 +435,24 @@ const MultiStepForm = () => {
       console.warn("Required Field", requiredFields);
       console.warn("Please fill the required field", fieldName);
       setShowErrors(true);
+      Swal.fire({
+        title: 'Wait!',
+        text: `Please Fill the Required Field ${fieldName}`,
+        icon: 'warning',
+        confirmButtonColor: '#976f00',
+        confirmButtonText: 'OK',
+      });
       return;
     }
 
     // ✅ all required filled → call your real submit logic
-    handleSubmit();
+    setIsLoading(true);
+    try {
+      await handleSubmit(); // since handleSubmit is async
+    } finally {
+      setIsLoading(false);
+      setStep(1);
+    }
   };
 
 
@@ -446,7 +472,7 @@ const MultiStepForm = () => {
     <div className="capitalize max-w-[95vw] mx-auto">
       {/* <h2 className="text-2xl mb-4 text-center">Chaturvedi Motors Form</h2> */}
       <StepIndicator currentStep={step} />
-      <div className="max-w-[80vw] mx-auto p-6 mt-10  rounded shadow-lg">
+      <div className="max-w-[80vw] mx-auto p-6 mt-10 rounded shadow-lg">
         <form onSubmit={onSubmit}>
           {step === 1 && (
             <StepOne
@@ -540,7 +566,7 @@ const MultiStepForm = () => {
               <button
                 type="button"
                 onClick={next}
-                className="bg-blue-600 cursor-pointer text-white px-4 py-2 rounded ml-auto"
+                className="bg-[#00c5c7] cursor-pointer text-white px-4 py-2 rounded ml-auto"
               >
                 Next
               </button>
@@ -551,7 +577,7 @@ const MultiStepForm = () => {
                 type="submit"
                 className="bg-green-600 cursor-pointer text-white px-6 py-2 rounded ml-auto"
               >
-                Submit
+                {isLoading ? "Submitting..." : "Submit"}
               </button>
             )}
           </div>

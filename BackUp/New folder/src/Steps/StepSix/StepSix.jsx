@@ -60,7 +60,7 @@ const StepSix = ({ formData = {}, setFormData = () => { }, setRequiredFields, sh
 
       // Cash
       if (stepData.paymentModessix?.includes("Cash")) {
-        fields.push("cashAmountsix");
+        fields.push("cashAmountsix", "agencyAmountsix", "paymentDatesix");
       }
 
       // NEFT/RTGS
@@ -106,9 +106,8 @@ const StepSix = ({ formData = {}, setFormData = () => { }, setRequiredFields, sh
       // setRequiredFields(fields);
     } else if (stepData.paymentStatus === 'Total Amount Due') {
       // setRequiredFields(fields);
-      fields.push( "comments", "dueAmount", "expectedClearDate")
+      fields.push("comments", "dueAmount", "expectedClearDate")
     }
-    fields.push("agencyAmountsix", "paymentDatesix");
     setRequiredFields(fields);
 
   }, [stepDataoflocal.paymentModessix, stepDataoflocal, stepData.paymentStatus]);
@@ -164,7 +163,7 @@ const StepSix = ({ formData = {}, setFormData = () => { }, setRequiredFields, sh
   } = stepData;
 
   useEffect(() => {
-    document.title = `Chaturvedi Motors Form || on Step5`
+    document.title = `Chaturvedi Motors Form || on Step6`
   }, [])
 
   return (
